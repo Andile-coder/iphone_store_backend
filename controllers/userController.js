@@ -105,4 +105,35 @@ const getUser = asyncHandler(async (req, res) => {
   // Respond with the user data
   res.json(user);
 });
-module.exports = { createUser, loginUser, getUser };
+
+const updatePassword = asyncHandler(async (req, res) => {
+  const userId = req.params.userId;
+  const { currentPassword, newPassword } = req.body;
+
+  // Fetch user from the database
+  const user = await User.findByPk(userId);
+
+  if (!user) {
+    res.status(404);
+    throw new Error("User not found");
+  }
+
+  // Check if the current password matches
+  const isPasswordValid = await bcrypt.compare(currentPassword, user.password);
+  if (!isPasswordValid) {
+    res.status(400);
+    throw new Error("Current password is incorrect");
+  }
+
+  // Hash the new password
+  const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+  // Update the user's password
+  user.password = hashedPassword;
+  await user.save();
+
+  // Respond with a success message
+  res.json({ message: "Password updated successfully" });
+});
+
+module.exports = { createUser, loginUser, getUser, updatePassword };
