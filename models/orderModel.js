@@ -2,6 +2,7 @@
 const { DataTypes } = require("sequelize");
 const sequelize = require("../config"); // Adjust the path to your sequelize instance
 const User = require("./userModel");
+const Product = require("./productModel");
 
 const Order = sequelize.define("Order", {
   order_id: {
@@ -21,7 +22,6 @@ const Order = sequelize.define("Order", {
   },
   date_placed: {
     type: DataTypes.DATE,
-    allowNull: false,
   },
   total_amount: {
     type: DataTypes.FLOAT,
@@ -29,11 +29,14 @@ const Order = sequelize.define("Order", {
   },
   status: {
     type: DataTypes.STRING,
-    allowNull: false,
   },
   type: {
     type: DataTypes.STRING,
+  },
+  products: {
+    type: DataTypes.JSONB, // Store product data as JSONB
     allowNull: false,
+    defaultValue: [], // Default value as empty array
   },
 });
 

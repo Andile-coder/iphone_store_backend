@@ -1,7 +1,7 @@
 const { DataTypes } = require("sequelize");
 const sequelize = require("../config"); // Adjust the path to your sequelize instance
-
-const Product = sequelize.define("Product", {
+const Order = require("./orderModel");
+const Product = sequelize.define("product", {
   product_id: {
     type: DataTypes.UUID,
     defaultValue: DataTypes.UUIDV4,
@@ -54,6 +54,7 @@ const Product = sequelize.define("Product", {
   image_url: {
     type: DataTypes.STRING,
   },
+
   // Define other attributes of the product as needed
 });
 
