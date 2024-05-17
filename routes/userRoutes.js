@@ -1,10 +1,16 @@
 const express = require("express");
 const router = express.Router();
-const { createUser, loginUser } = require("../controllers/userController");
+const {
+  createUser,
+  loginUser,
+  getUser,
+} = require("../controllers/userController");
 // const validateToken = require("../middlewear/validateToken");
 router.post("/auth/login", loginUser);
 
 router.post("/auth/register", createUser);
+//get user
+router.get("/auth/user/:userId", getUser);
 
 // router.get("/user", validateToken, currentUser);
 

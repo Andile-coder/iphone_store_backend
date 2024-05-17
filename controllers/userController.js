@@ -89,4 +89,20 @@ const loginUser = asyncHandler(async (req, res) => {
 //   }
 //   res.status(200).json(req.user);
 // });
-module.exports = { createUser, loginUser };
+
+const getUser = asyncHandler(async (req, res) => {
+  const userId = req.params.userId;
+  console.log(userId);
+
+  // Fetch user from the database
+  const user = await User.findByPk(userId);
+
+  if (!user) {
+    res.status(404);
+    throw new Error("User not found");
+  }
+
+  // Respond with the user data
+  res.json(user);
+});
+module.exports = { createUser, loginUser, getUser };
