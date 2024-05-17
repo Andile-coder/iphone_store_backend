@@ -9,7 +9,10 @@ app.use(cors());
 app.use(express.json());
 
 const userRoutes = require("./routes/userRoutes");
+const productRoutes = require("./routes/productRoutes");
+// const orderRoutes = require("./routes/orderRoutes");
 app.use("/api", userRoutes);
+app.use("/api/products", productRoutes);
 sequelize
   .sync({ alter: true }) // alter: true updates the schema if it changes; remove for production
   .then(() => {

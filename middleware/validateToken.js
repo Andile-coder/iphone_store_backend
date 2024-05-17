@@ -1,6 +1,6 @@
 const asynHandler = require("express-async-handler");
 
-const { constants } = require("../constants");
+// const { constants } = require("../constants");
 const jwt = require("jsonwebtoken");
 
 const validateToken = asynHandler(async (req, res, next) => {
@@ -18,7 +18,7 @@ const validateToken = asynHandler(async (req, res, next) => {
       next();
     });
   } else {
-    res.status(constants.VALIDATION_ERROR);
+    // res.status(constants.VALIDATION_ERROR);
     throw new Error("User Not Authorized");
   }
 });

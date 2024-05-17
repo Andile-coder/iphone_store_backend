@@ -29,6 +29,9 @@ const User = sequelize.define(
     role: {
       type: DataTypes.STRING(50),
     },
+    last_login: {
+      type: DataTypes.DATE,
+    },
   },
   {
     tableName: "users", // Specify the table name
