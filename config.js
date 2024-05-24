@@ -1,5 +1,6 @@
 const { Sequelize } = require("sequelize");
 const dotenv = require("dotenv");
+const cloudinary = require("cloudinary").v2;
 
 // Load environment variables from .env file
 dotenv.config();
@@ -20,4 +21,15 @@ const sequelize = new Sequelize(
   }
 );
 
-module.exports = sequelize;
+// create a new clodinary instance
+
+// Configure cloudinary
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
+
+// Export cloudinary configuration
+
+module.exports = { sequelize, cloudinary };

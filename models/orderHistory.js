@@ -1,6 +1,6 @@
 // orderHistoryModel.js
 const { DataTypes } = require("sequelize");
-const sequelize = require("../config");
+const { sequelize } = require("../config");
 
 const Order = require("./orderModel"); // Import the Order model
 

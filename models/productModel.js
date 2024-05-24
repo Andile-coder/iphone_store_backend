@@ -1,5 +1,5 @@
 const { DataTypes } = require("sequelize");
-const sequelize = require("../config"); // Adjust the path to your sequelize instance
+const { sequelize } = require("../config"); // Adjust the path to your sequelize instance
 const Order = require("./orderModel");
 const Product = sequelize.define("product", {
   product_id: {
@@ -53,6 +53,10 @@ const Product = sequelize.define("product", {
   },
   image_url: {
     type: DataTypes.STRING,
+  },
+  quantity: {
+    type: DataTypes.INTEGER,
+    defaultValue: 0,
   },
 
   // Define other attributes of the product as needed

@@ -10,14 +10,14 @@ const { v4: uuidv4 } = require("uuid");
 //@route POST /register
 //@access public
 const createUser = asyncHandler(async (req, res) => {
-  const { username, email, password, phone } = req.body;
+  const { username, email, password, phone, first_name, last_name } = req.body;
   const availableUser = await User.findOne({ where: { email } });
   if (availableUser) {
     res.status(400);
     throw new Error("User with email already registered");
   }
 
-  if (!username || !email || !password || !phone) {
+  if (!username || !email || !password || !phone || !first_name || !last_name) {
     res.status(400);
     throw new Error("Username, Email,Password and Phone are required");
   }
@@ -28,6 +28,8 @@ const createUser = asyncHandler(async (req, res) => {
     username,
     email,
     phone,
+    first_name,
+    last_name,
     password: hashedPassword,
     status: "active",
     role: "user",
@@ -60,18 +62,23 @@ const loginUser = asyncHandler(async (req, res) => {
   if (user && (await bcrypt.compare(password, user.password))) {
     const accessToken = jwt.sign(
       {
-        user: {
-          username: user.username,
-          email: user.email,
-          user_id: user.user_id,
-        },
+        user,
       },
       process.env.ACCESS_TOKEN_SECRET,
       { expiresIn: "59m" }
     );
-    console.log("login successful");
-    res.status(200).json({ accessToken });
-    return;
+    // update last login
+    user.last_login = new Date();
+    await user.save();
+    res
+      .cookie("token", accessToken, {
+        httpOnly: true,
+        sameSite: "strict",
+        Path: "/", // set the cookie for all routes
+        maxAge: 3600000,
+      })
+      .send({ user, token: accessToken });
+    res.status(200).json({ user, token: accessToken }); // token should only be for testing
   } else {
     // res.sendStatus(constants.UNAUTHORISED);
     throw new Error("Invalid User Credentials");
@@ -90,10 +97,9 @@ const loginUser = asyncHandler(async (req, res) => {
 //   res.status(200).json(req.user);
 // });
 
-const getUser = asyncHandler(async (req, res) => {
+const getUserById = asyncHandler(async (req, res) => {
   const userId = req.params.userId;
   console.log(userId);
-
   // Fetch user from the database
   const user = await User.findByPk(userId);
 
@@ -105,7 +111,17 @@ const getUser = asyncHandler(async (req, res) => {
   // Respond with the user data
   res.json(user);
 });
-
+const getUser = asyncHandler(async (req, res) => {
+  const { user_id } = req.user;
+  // Fetch user from the database
+  const user = await User.findByPk(user_id);
+  if (!user) {
+    res.status(404);
+    throw new Error("User not found");
+  }
+  // Respond with the user data
+  res.status(200).json(user);
+});
 const updatePassword = asyncHandler(async (req, res) => {
   const userId = req.params.userId;
   const { currentPassword, newPassword } = req.body;
@@ -136,4 +152,15 @@ const updatePassword = asyncHandler(async (req, res) => {
   res.json({ message: "Password updated successfully" });
 });
 
-module.exports = { createUser, loginUser, getUser, updatePassword };
+const logout = asyncHandler(async (req, res) => {
+  res.clearCookie("token"); // Clear the token cookie
+  res.status(200).json({ message: "Logged out successfully" }); // Send a structured JSON response with a status code
+});
+module.exports = {
+  createUser,
+  loginUser,
+  getUserById,
+  getUser,
+  updatePassword,
+  logout,
+};

@@ -14,8 +14,8 @@ router.route("/").get(getProducts).post(createProduct);
 router
   .route("/:productId")
   .get(getProductById)
-  .put(validateToken, updateProduct)
-  .delete(validateToken, deleteProduct);
+  .put(updateProduct)
+  .delete(deleteProduct);
 
 module.exports = router;
 // Path: routes/userRoutes.js

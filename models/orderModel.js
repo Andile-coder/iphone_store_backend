@@ -1,6 +1,6 @@
 // orderModel.js
 const { DataTypes } = require("sequelize");
-const sequelize = require("../config"); // Adjust the path to your sequelize instance
+const { sequelize } = require("../config"); // Adjust the path to your sequelize instance
 const User = require("./userModel");
 const Product = require("./productModel");
 

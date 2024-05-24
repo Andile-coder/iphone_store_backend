@@ -5,13 +5,19 @@ const {
   loginUser,
   getUser,
   updatePassword,
+  getUserById,
+  logout,
 } = require("../controllers/userController");
+const validateToken = require("../middleware/validateToken");
 // const validateToken = require("../middlewear/validateToken");
 router.post("/auth/login", loginUser);
 
 router.post("/auth/register", createUser);
+router.post("/auth/logout", logout);
 //get user
-router.get("/auth/user/:userId", getUser);
+router.get("/auth/user/:userId", validateToken, getUserById);
+router.get("/auth/user", validateToken, getUser);
+
 //update password
 router.put("/auth/user/:userId", updatePassword);
 

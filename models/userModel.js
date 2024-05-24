@@ -1,5 +1,5 @@
 const { DataTypes } = require("sequelize");
-const sequelize = require("../config");
+const { sequelize } = require("../config");
 
 // Define the User model that matches your existing table
 const User = sequelize.define(
@@ -12,6 +12,12 @@ const User = sequelize.define(
       autoIncrement: false,
     },
     username: {
+      type: DataTypes.STRING(50),
+    },
+    first_name: {
+      type: DataTypes.STRING(50),
+    },
+    last_name: {
       type: DataTypes.STRING(50),
     },
     email: {
