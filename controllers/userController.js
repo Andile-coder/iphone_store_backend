@@ -81,21 +81,9 @@ const loginUser = asyncHandler(async (req, res) => {
     res.status(200).json({ user, token: accessToken }); // token should only be for testing
   } else {
     // res.sendStatus(constants.UNAUTHORISED);
-    throw new Error("Invalid User Credentials");
+    res.status(401).json({ message: "Invalid email or password" });
   }
 });
-
-//@desc current user
-//@route get /current
-//@access private
-
-// const currentUser = asyncHandler(async (req, res) => {
-//   if (!req.user) {
-//     res.sendStatus(constants.UNAUTHORISED);
-//     throw new Error("Invalid User Credentials");
-//   }
-//   res.status(200).json(req.user);
-// });
 
 const getUserById = asyncHandler(async (req, res) => {
   const userId = req.params.userId;
@@ -111,6 +99,36 @@ const getUserById = asyncHandler(async (req, res) => {
   // Respond with the user data
   res.json(user);
 });
+
+//@desc update user
+//@route PATCH /user
+//@access private
+
+const updateUser = asyncHandler(async (req, res) => {
+  const { username, email, phone, first_name, last_name } = req.body;
+  const { user_id } = req.user;
+
+  // Fetch user from the database
+  const user = await User.findByPk(user_id);
+
+  if (!user) {
+    res.status(404);
+    throw new Error("User not found");
+  }
+
+  // Update the user's data
+  user.username = username;
+  user.email = email;
+  user.phone = phone;
+  user.first_name = first_name;
+  user.last_name = last_name;
+
+  await user.save();
+
+  // Respond with a success message
+  res.status(201).json({ message: "User updated successfully" });
+});
+
 const getUser = asyncHandler(async (req, res) => {
   const { user_id } = req.user;
   // Fetch user from the database
@@ -123,33 +141,32 @@ const getUser = asyncHandler(async (req, res) => {
   res.status(200).json(user);
 });
 const updatePassword = asyncHandler(async (req, res) => {
-  const userId = req.params.userId;
-  const { currentPassword, newPassword } = req.body;
+  const { old_password, new_password, user_id } = req.body;
 
   // Fetch user from the database
-  const user = await User.findByPk(userId);
+  const user = await User.findByPk(user_id);
 
   if (!user) {
-    res.status(404);
+    res.status(404).send("User not found"); // Respond with a 404 status code and message
     throw new Error("User not found");
   }
 
   // Check if the current password matches
-  const isPasswordValid = await bcrypt.compare(currentPassword, user.password);
+  const isPasswordValid = await bcrypt.compare(old_password, user.password);
   if (!isPasswordValid) {
-    res.status(400);
-    throw new Error("Current password is incorrect");
+    res.status(401).json({ message: "Current password is incorrect" }); // Respond with a 400 status code and message
+    // throw new Error("Current password is incorrect");
   }
 
   // Hash the new password
-  const hashedPassword = await bcrypt.hash(newPassword, 10);
+  const hashedPassword = await bcrypt.hash(new_password, 10);
 
   // Update the user's password
   user.password = hashedPassword;
   await user.save();
 
   // Respond with a success message
-  res.json({ message: "Password updated successfully" });
+  res.status(201).json({ message: "Password updated successfully" });
 });
 
 const logout = asyncHandler(async (req, res) => {
@@ -163,4 +180,5 @@ module.exports = {
   getUser,
   updatePassword,
   logout,
+  updateUser,
 };

@@ -7,24 +7,33 @@ const app = express();
 const cors = require("cors");
 
 const port = process.env.PORT || 3001;
-app.use(bodyParser.json());
+app.use(bodyParser.json({ limit: "100mb" }));
+app.use(bodyParser.urlencoded({ limit: "100mb", extended: true }));
 app.use(cookieParser());
 const corsOptions = {
   origin: ["http://localhost:5173", "https://localhost:5173"], // Allow your frontend's origin
   credentials: true, // Allow credentials (cookies)
 };
 app.use(cors(corsOptions));
-app.use(express.json({ limit: "50mb" }));
+app.use(express.json());
 
 const userRoutes = require("./routes/userRoutes");
 const productRoutes = require("./routes/productRoutes");
 const orderRoutes = require("./routes/orderRoutes");
 const imageRoutes = require("./routes/imageRoutes");
-// const orderRoutes = require("./routes/orderRoutes");
+const colorRoutes = require("./routes/colorRoutes");
+const cloudinaryRoutes = require("./routes/cloudinaryRoutes");
+const addressRoutes = require("./routes/addressRoutes");
+const cardInfoRoutes = require("./routes/cardInfoRoutes");
+
 app.use("/api", userRoutes);
 app.use("/api/products", productRoutes);
 app.use("/api/orders", orderRoutes);
+app.use("/api/colors", colorRoutes);
 app.use("/api/images", imageRoutes);
+app.use("/api/cloudinary", cloudinaryRoutes);
+app.use("/api/address", addressRoutes);
+app.use("/api/card", cardInfoRoutes);
 sequelize
   .sync({ alter: true }) // alter: true updates the schema if it changes; remove for production
   .then(() => {

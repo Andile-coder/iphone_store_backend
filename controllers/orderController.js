@@ -11,8 +11,19 @@ const { v4: uuidv4 } = require("uuid");
 //@access private
 
 const createOrder = asyncHandler(async (req, res) => {
-  const { user_id, products, quantity, total_amount } = req.body;
-  if (!user_id || !products || !total_amount) {
+  const { products, quantity, total_amount, shipping_price, items_price } =
+    req.body;
+  const user_id = req.user.user_id;
+
+  console.log(req.body);
+  if (
+    !user_id ||
+    !products ||
+    !total_amount ||
+    !shipping_price ||
+    !items_price ||
+    !quantity
+  ) {
     res.status(400);
     throw new Error("User ID, Product ID, Quantity and Total are required");
   }
@@ -24,6 +35,9 @@ const createOrder = asyncHandler(async (req, res) => {
     products,
     quantity,
     total_amount,
+    shipping_price,
+    items_price,
+    status: "100",
   })
     .then((order) => {
       res
@@ -78,10 +92,30 @@ const updateOrderStatus = asyncHandler(async (req, res) => {
 
 const deleteOrder = asyncHandler(async (req, res) => {});
 
+//@desc get orders by id
+//@route GET /order/:orderId
+//@access private
+
+const getOrdersByUserId = asyncHandler(async (req, res) => {
+  const user_id = req.params.id;
+  const authUser = req.user.user_id;
+  if (user_id !== authUser) {
+    res.status(403);
+    throw new Error("Unauthorized access");
+  }
+  Order.findAll({ where: { user_id } })
+    .then((orders) => {
+      res.status(200).json({ message: "orders fetched", orders });
+    })
+    .catch((error) => {
+      res.status(400).json({ message: "Failed to fetch orders " + error });
+    });
+});
 module.exports = {
   createOrder,
   getOrders,
   getOrderById,
   updateOrderStatus,
   deleteOrder,
+  getOrdersByUserId,
 };
