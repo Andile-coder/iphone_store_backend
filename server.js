@@ -25,6 +25,7 @@ const colorRoutes = require("./routes/colorRoutes");
 const cloudinaryRoutes = require("./routes/cloudinaryRoutes");
 const addressRoutes = require("./routes/addressRoutes");
 const cardInfoRoutes = require("./routes/cardInfoRoutes");
+const productVariationRoutes = require("./routes/productVariationsRoutes");
 
 app.use("/api", userRoutes);
 app.use("/api/products", productRoutes);
@@ -34,6 +35,7 @@ app.use("/api/images", imageRoutes);
 app.use("/api/cloudinary", cloudinaryRoutes);
 app.use("/api/address", addressRoutes);
 app.use("/api/card", cardInfoRoutes);
+app.use("/api/product_variations", productVariationRoutes);
 sequelize
   .sync({ alter: true }) // alter: true updates the schema if it changes; remove for production
   .then(() => {

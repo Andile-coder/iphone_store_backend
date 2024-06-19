@@ -1,5 +1,6 @@
 const { cloudinary } = require("../config");
 const asyncHandler = require("express-async-handler");
+const { get } = require("../routes/cloudinaryRoutes");
 
 const options = {
   folder: "iphone_store",
@@ -39,7 +40,7 @@ const uploadImage = asyncHandler(async (req, res) => {
   }
 });
 
-const getImage = asyncHandler(async (req, res) => {
+const getProfilePicture = asyncHandler(async (req, res) => {
   try {
     const user_id = req.params.id;
 
@@ -66,4 +67,50 @@ const getImage = asyncHandler(async (req, res) => {
   }
 });
 
-module.exports = { uploadImage, getImage };
+const getImage = asyncHandler(async (req, res) => {
+  try {
+    console.log("body");
+    const image_id = req.body;
+    console.log("body", image_id);
+    if (!image_id) {
+      return res.status(400).json({ message: "Image id is required" });
+    }
+    const result = await cloudinary.search
+      .expression(`tags=${image_id}`)
+      .execute();
+    if (result && result.resources) {
+      return res.status(200).json({
+        message: "Image retrieved successfully",
+        image: result.resources,
+      });
+    } else {
+      throw new Error("Image retrieval failed");
+    }
+  } catch (error) {
+    console.error("Error retrieving image server side:", error.message);
+    return res.status(500).json({ message: error.message });
+  }
+});
+
+// get all images
+
+const getImages = asyncHandler(async (req, res) => {
+  try {
+    const result = await cloudinary.search
+      .expression("folder=iphone_store")
+      .execute();
+    if (result && result.resources) {
+      return res.status(200).json({
+        message: "Images retrieved successfully",
+        images: result.resources,
+      });
+    } else {
+      throw new Error("Image retrieval failed");
+    }
+  } catch (error) {
+    console.error("Error retrieving images server side:", error.message);
+    return res.status(500).json({ message: error.message });
+  }
+});
+
+module.exports = { uploadImage, getProfilePicture, getImage, getImages };
