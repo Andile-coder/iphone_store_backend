@@ -2,7 +2,7 @@ const router = require("express").Router();
 const {
   createCardInfo,
   getCardInfos,
-} = require("../controllers/cardinfoController");
+} = require("../controllers/cardInfoController");
 
 const validateToken = require("../middleware/validateToken");
 
