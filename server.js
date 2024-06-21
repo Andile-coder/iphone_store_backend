@@ -11,7 +11,7 @@ app.use(bodyParser.json({ limit: "100mb" }));
 app.use(bodyParser.urlencoded({ limit: "100mb", extended: true }));
 app.use(cookieParser());
 const corsOptions = {
-  origin: ["http://localhost:5173", "https://localhost:5173"], // Allow your frontend's origin
+  origin: ["http://localhost:5173", "https://localhost:5173","https://iphone-store-io3x.vercel.app"], // Allow your frontend's origin
   credentials: true, // Allow credentials (cookies)
 };
 app.use(cors(corsOptions));
