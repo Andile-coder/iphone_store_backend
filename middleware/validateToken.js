@@ -7,6 +7,7 @@ const validateToken = asynHandler(async (req, res, next) => {
   let token;
   let authHeader = req.headers.Authorization || req.headers.authorization;
   console.log("cookie token", req.cookies.token);
+  console.log("cookie", req.cookies);
   if (authHeader && authHeader.startsWith("Bearer")) {
     //postman
     token = authHeader.split(" ")[1];
