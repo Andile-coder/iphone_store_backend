@@ -22,6 +22,7 @@ const validateToken = asynHandler(async (req, res, next) => {
     //browser
     console.log("cookie token", req.cookies.token);
     token = req.cookies.token;
+    
     jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, decoded) => {
       if (err) {
         // res.status(constants.VALIDATION_ERROR);

@@ -71,6 +71,7 @@ const loginUser = asyncHandler(async (req, res) => {
     // update last login
     user.last_login = new Date();
     await user.save();
+    console.log("process.env.PRODUCTION",process.env.PRODUCTION);
     res
       .cookie("token", accessToken, {
         httpOnly: true,
