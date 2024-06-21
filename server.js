@@ -13,6 +13,7 @@ app.use(cookieParser());
 const corsOptions = {
   origin: ["http://localhost:5173", "https://localhost:5173","https://iphone-store-io3x.vercel.app"], // Allow your frontend's origin
   credentials: true, // Allow credentials (cookies)
+  
 };
 app.use(cors(corsOptions));
 app.use(express.json());

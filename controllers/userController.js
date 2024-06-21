@@ -5,6 +5,7 @@ const asyncHandler = require("express-async-handler");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const { v4: uuidv4 } = require("uuid");
+const isProduction = process.env.PRODUCTION;
 
 //@desc register user
 //@route POST /register
@@ -76,6 +77,7 @@ const loginUser = asyncHandler(async (req, res) => {
         sameSite: "strict",
         Path: "/", // set the cookie for all routes
         maxAge: 3600000,
+        secure:isProduction
       })
       .send({ user, token: accessToken });
     res.status(200).json({ user, token: accessToken }); // token should only be for testing
