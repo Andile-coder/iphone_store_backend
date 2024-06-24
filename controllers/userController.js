@@ -74,6 +74,7 @@ const loginUser = asyncHandler(async (req, res) => {
     res
       .cookie("token", accessToken, {
         httpOnly: true,
+        sameSite: "None",
         Path: "/", // set the cookie for all routes
         maxAge: 3600000,
         secure: process.env.PRODUCTION,
